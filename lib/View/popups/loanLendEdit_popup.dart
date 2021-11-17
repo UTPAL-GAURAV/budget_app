@@ -1,12 +1,15 @@
-import 'package:budget_app/models/loanlend.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
+
+import '../../Model/loanlend.dart';
 import '../../Controller/home_controller.dart';
 
 
+
 late String _amountLLE;
-int _remainingAmount = 0, _newRemainingAmount = 0;
+int _newRemainingAmount = 0;
+DateTime _dateLLE = DateTime.now();
 final _LLEFormKey = GlobalKey<FormState>();
 
 final _loanlendBox = Hive.box('loanlend');
@@ -19,7 +22,7 @@ loanLendEditPopup(BuildContext context, int index) {
       return Form(
         key: _LLEFormKey,
         child: AlertDialog(
-          title: Text("Loan/Lend (Update)"),
+          title: const Text("Loan/Lend (Update)"),
           content: StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
                 return ConstrainedBox(
@@ -32,11 +35,17 @@ loanLendEditPopup(BuildContext context, int index) {
                           Text("Rs." + loanLend.amount.toString()),
                         ],
                       ),
-                      Align(alignment: Alignment.centerLeft, child: Text("Returned amount")),
                       TextFormField(
                         keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(hintText: " 0"),
+                        decoration: const InputDecoration(hintText: " 0", labelText: "Returned amount"),
                         onSaved: (value) => _amountLLE = value!,
+                      ),
+                      InputDatePickerFormField(
+                        fieldLabelText: "Change Due Date (mm/dd/yyyy)",
+                        initialDate: loanLend.date,
+                        firstDate: DateTime(2020),
+                        lastDate: DateTime(2080),
+                        onDateSaved: (date){ setState(() { _dateLLE = date;}); },
                       ),
                     ],
                   ),
@@ -48,7 +57,7 @@ loanLendEditPopup(BuildContext context, int index) {
                 onPressed: () {
                   _LLEFormKey.currentState!.save();
                   _newRemainingAmount = loanLend.amount - int.parse(_amountLLE);
-                  final updateLLTransaction = LoanLend(loanLend.lenderBorrower, _newRemainingAmount, loanLend.name, loanLend.date, false);
+                  final updateLLTransaction = LoanLend(loanLend.lenderBorrower, _newRemainingAmount, loanLend.name, _dateLLE, false);
                   returnLoanLend(index, updateLLTransaction, int.parse(_amountLLE));
                   Navigator.of(context, rootNavigator: true).pop();
                 }),

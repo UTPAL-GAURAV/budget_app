@@ -1,11 +1,12 @@
-import 'package:budget_app/View/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hive/hive.dart';
-import '../../Controller/home_controller.dart';
-import '../../models/income_expense.dart';
 
-bool _isSwitchedIE = false, _isCheckedIE = false, _incomeExpenseTextIE = false;
+import '../../Model/income_expense.dart';
+import '../../Controller/home_controller.dart';
+
+
+
+bool _isSwitchedIE = false, _incomeExpenseTextIE = false;
 late String _nameIE, _amountIE;
 DateTime _dateIE = DateTime.now();
 final _IEFormKey = GlobalKey<FormState>();
@@ -17,7 +18,7 @@ incomeExpensePopup(BuildContext context) {
       return Form(
         key: _IEFormKey,
         child: AlertDialog(
-          title: Text("Income/Expense"),
+          title: const Text("Income/Expense"),
           content: StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
             return ConstrainedBox(
@@ -39,55 +40,36 @@ incomeExpensePopup(BuildContext context) {
                               _incomeExpenseTextIE = !_incomeExpenseTextIE;
                             });
                           }),
-                      Visibility(visible: _incomeExpenseTextIE, child: Text("Expense", style: TextStyle(color: Colors.red))),
-                      Visibility(visible: !_incomeExpenseTextIE, child: Text("Income", style: TextStyle(color: Colors.green))),
+                      Visibility(visible: _incomeExpenseTextIE, child: const Text("Expense", style: TextStyle(color: Colors.red))),
+                      Visibility(visible: !_incomeExpenseTextIE, child: const Text("Income", style: TextStyle(color: Colors.green))),
                     ],
                   ),
-                  Align(alignment: Alignment.centerLeft, child: Text("Name")),
                   TextFormField(
                     decoration:
-                        const InputDecoration(hintText: " Salary, Netflix"),
+                        const InputDecoration(hintText: " Salary, Netflix", labelText: "Name"),
                     onSaved: (value) => _nameIE = value!,
                   ),
-                  Align(alignment: Alignment.centerLeft, child: Text("Amount")),
                   TextFormField(
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(hintText: " 0"),
+                    decoration: const InputDecoration(hintText: " 0", labelText: "Amount"),
                     onSaved: (value) => _amountIE = value!,
                   ),
                   InputDatePickerFormField(
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2021, 1, 1),
-                      lastDate: DateTime.now(),
-                      onDateSubmitted: (value){_dateIE = value;},
+                      fieldLabelText: "Due Date (mm/dd/yyyy)",
+                      initialDate: _dateIE,
+                      firstDate: DateTime(2020),
+                      lastDate: _dateIE,
+                      onDateSaved: (date){ setState(() { _dateIE = date;}); },
                   ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Visibility(
-                      visible: !_isSwitchedIE,
-                      child: CheckboxListTile(
-                        key: Key('keyCheckBox'),
-                        title: Text("Set in monthly budget"),
-                        controlAffinity: ListTileControlAffinity.leading,
-                        value: _isCheckedIE,
-                        onChanged: (bool? newValue) {
-                          setState(() {
-                            _isCheckedIE = newValue!;
-                          });
-                        },
-                      ),
-                    ),
-                  )
                 ],
               ),
             );
           }),
           actions: [
             TextButton(
-                child: Text("Save"),
+                child: const Text("Save"),
                 onPressed: () {
                   _IEFormKey.currentState!.save();
-                  print(!_isSwitchedIE);
                   final newIETransaction = IncomeExpense(!_isSwitchedIE, _nameIE, int.parse(_amountIE), _dateIE);
                   addNewIncomeExpense(newIETransaction);
                   Navigator.of(context, rootNavigator: true).pop();

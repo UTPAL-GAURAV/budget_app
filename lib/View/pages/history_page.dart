@@ -1,4 +1,4 @@
-import 'package:budget_app/models/history.dart';
+import 'package:budget_app/Model/history.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import '../../utils/constants.dart' as constant;
@@ -12,21 +12,21 @@ class HistoryPage extends StatefulWidget {
 }
 
 final _historyBox = Hive.box('history');
+int _totalHistoryCount = getHistoryItemCount();
 
 class _HistoryPageState extends State<HistoryPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(constant.appName+"  (History)"),),
+      appBar: AppBar(title: const Text(constant.appName+"  (History)"),),
       body: ConstrainedBox(
-        constraints: BoxConstraints(maxHeight: 700),
+        constraints: const BoxConstraints(maxHeight: 700),
         child: Align( alignment: Alignment.topCenter,
           child: ListView.builder(
-            reverse: true,
             shrinkWrap: true,
-            itemCount: getHistoryItemCount(), //loanlendBox.length,
+            itemCount: _totalHistoryCount,
             itemBuilder: (context, index) {
-              final history = _historyBox.getAt(index) as History;
+              final history = _historyBox.getAt(_totalHistoryCount -1 -index) as History;
               return Card(
                 child: ListTile(
                   title: Text(history.name),

@@ -1,13 +1,13 @@
-import 'package:budget_app/models/income_expense.dart';
-import 'package:budget_app/models/loanlend.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 
+import '../Model/income_expense.dart';
+import '../Model/loanlend.dart';
 import '../View/popups/incomeExpense_popup.dart';
 import '../View/popups/loanLend_popup.dart';
 import '../View/popups/loanLendEdit_popup.dart';
-import '../Controller/history_controller.dart';
-import '../utils/constants.dart' as constant;
+import 'history_controller.dart';
+import '../Utils/constants.dart' as constant;
 
 
 openIncomeExpensePopup(BuildContext context) {
@@ -39,8 +39,9 @@ addNewLoanLend(LoanLend newLLTransaction) {
   incomeExpenseBox.add(newLLTransaction);
   updateInHistory("Loan/Lend", newLLTransaction.amount, newLLTransaction.date, newLLTransaction.name, newLLTransaction.lenderBorrower);
   updateBankBalance(!newLLTransaction.lenderBorrower, newLLTransaction.amount);
-  if(newLLTransaction.lenderBorrower == false)
+  if(newLLTransaction.lenderBorrower == false) {
     updateWorth(false, newLLTransaction.amount);
+  }
 }
 
 
@@ -54,8 +55,9 @@ returnLoanLend(int index, LoanLend updateLLTransaction, int _amountLLE) {
   newName = updateLLTransaction.name + " (returned)";
   updateInHistory("Loan/Lend", _amountLLE, updateLLTransaction.date, newName, updateLLTransaction.lenderBorrower);
   updateBankBalance(updateLLTransaction.lenderBorrower, _amountLLE);
-  if(updateLLTransaction.lenderBorrower == false)
-    updateWorth(false, _amountLLE);
+  // if(updateLLTransaction.lenderBorrower == false) {
+  //   updateWorth(false, _amountLLE);
+  // }
 }
 
 
@@ -63,10 +65,11 @@ updateBankBalance(bool AddOrSub, int amount) {
   Hive.openBox('balance');
   final balanceBox = Hive.box('balance');
   int _currentBalance = balanceBox.getAt(0);
-  if(AddOrSub == true)
+  if(AddOrSub == true) {
     _currentBalance += amount;
-  else
+  } else {
     _currentBalance -= amount;
+  }
 
   balanceBox.putAt(0, _currentBalance);
 }
@@ -76,10 +79,11 @@ updateWorth(bool AddOrSub, int amount) {
     Hive.openBox('balance');
     final balanceBox = Hive.box('balance');
     int _currentWorth = balanceBox.getAt(1);
-    if(AddOrSub == true)
+    if(AddOrSub == true) {
       _currentWorth += amount;
-    else
+    } else {
       _currentWorth -= amount;
+    }
 
     balanceBox.putAt(1, _currentWorth);
 }
@@ -118,10 +122,11 @@ int getWorth() {
 String getLoanLendText(bool lenderBorrower) {
   late String loanLendString;
 
-  if(lenderBorrower==true)
+  if(lenderBorrower==true) {
     loanLendString = constant.lendString;
-  else
+  } else {
     loanLendString = constant.loanString;
+  }
 
   return loanLendString;
 }
@@ -133,8 +138,9 @@ int getLoanLendItemCount() {
   Hive.openBox('loanlend');
   final loanLendBox = Hive.box('loanlend');
 
-  for(i=0; i<loanLendBox.length; i++)
+  for(i=0; i<loanLendBox.length; i++) {
     _itemCount += 1;
+  }
 
   return _itemCount;
 }

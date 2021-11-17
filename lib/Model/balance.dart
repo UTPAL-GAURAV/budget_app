@@ -1,5 +1,3 @@
-
-
 import 'package:hive/hive.dart';
 part 'balance.g.dart';
 

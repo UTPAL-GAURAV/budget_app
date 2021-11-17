@@ -24,8 +24,8 @@ class _HomePageState extends State<HomePage> {
         child: Scaffold(
           drawer: Drawer(child: menuItems(context)),
           appBar: AppBar(
-            title: Text(constant.appName),
-            bottom: TabBar(
+            title: const Text(constant.appName),
+            bottom: const TabBar(
               tabs: [
                 Tab(
                   text: "Home",
@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-          body: TabBarView(
+          body: const TabBarView(
             children: [
               HomeScreen(),
               BudgetScreen(),

@@ -1,8 +1,9 @@
-import 'package:budget_app/Controller/sharedPrefrences.dart';
-import 'package:budget_app/View/snackbars/editUserName_snackbar.dart';
-import 'package:budget_app/models/currency.dart';
-import 'package:budget_app/utils/currencies.dart';
 import 'package:flutter/cupertino.dart';
+
+import '../Model/currency.dart';
+import 'sharedPrefrences.dart';
+import '../Utils/currencies.dart';
+
 
 saveUserCurrency(String country, BuildContext context) async {
   MySharedPreferences.instance.setUserStringData('userCurrencyCountry', country);
@@ -34,11 +35,3 @@ Future<dynamic> getUserName() async{
 }
 
 
-showSnackbarEditUserName() {
-  editUserName();
-}
-
-
-saveNewUserName(String newUserName) {
-
-}

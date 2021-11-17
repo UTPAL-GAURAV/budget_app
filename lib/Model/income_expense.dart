@@ -1,4 +1,3 @@
-
 import 'package:hive/hive.dart';
 part 'income_expense.g.dart';
 

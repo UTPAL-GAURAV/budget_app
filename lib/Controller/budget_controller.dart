@@ -1,16 +1,13 @@
-import 'dart:ffi';
-
-import 'package:budget_app/models/budget.dart';
-import 'package:budget_app/models/history.dart';
-import 'package:budget_app/View/pages/budgetHistory_page.dart';
-import 'package:budget_app/View/popups/budgetDelete_popup.dart';
-import 'package:budget_app/View/popups/budgetEdit_popup.dart';
-import 'package:budget_app/View/popups/budgetNew_popup.dart';
-import 'package:budget_app/View/popups/budgetUpdate_popup.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
+import '../Model/budget.dart';
+import '../Model/history.dart';
+import '../View/popups/budgetDelete_popup.dart';
+import '../View/popups/budgetEdit_popup.dart';
+import '../View/popups/budgetNew_popup.dart';
+import '../View/popups/budgetUpdate_popup.dart';
 import 'history_controller.dart';
 import 'home_controller.dart';
 
@@ -46,8 +43,9 @@ updateBudget(int index, Budget updateBUTransaction, int _amountBU, String _nameB
   if(_nameBU!="") {
     updateInHistory("Budget", _amountBU, DateTime.now(), _nameBU, updateBUTransaction.investmentExpense);
     updateBankBalance(false, _amountBU);
-    if(updateBUTransaction.investmentExpense == false)
+    if(updateBUTransaction.investmentExpense == false) {
       updateWorth(false, _amountBU);
+    }
   }
 }
 
@@ -65,8 +63,9 @@ int getBudgetCount() {
   Hive.openBox('budget');
   final loanLendBox = Hive.box('budget');
 
-  for(i=0; i<loanLendBox.length; i++)
+  for(i=0; i<loanLendBox.length; i++) {
     _itemCount += 1;
+  }
 
   return _itemCount;
 }
@@ -89,8 +88,9 @@ int getBudgetHistoryItemCount(int index) {
     final history = historyBox.getAt(i) as History;
     var _foundName = history.name.split(" (");
     _trimmedName = _foundName[0].trim();
-    if(_budgetName == _trimmedName)
+    if(_budgetName == _trimmedName) {
       _itemCount += 1;
+    }
   }
   return _itemCount;
 }

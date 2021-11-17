@@ -1,7 +1,8 @@
-import 'package:budget_app/models/history.dart';
+import 'package:budget_app/Model/history.dart';
 import 'package:flutter/material.dart';
 import '../../utils/constants.dart' as constant;
 import '../../Controller/budget_controller.dart';
+
 
 class BudgetHistoryPage extends StatefulWidget {
   const BudgetHistoryPage({Key? key, required this.index}) : super(key: key);
@@ -15,38 +16,35 @@ class BudgetHistoryPage extends StatefulWidget {
 class _BudgetHistoryPageState extends State<BudgetHistoryPage> {
   var index;
 
-  _BudgetHistoryPageState({Key? key, required this.index}) : super();
+  _BudgetHistoryPageState({required this.index}) : super();
   @override
   Widget build(BuildContext context) {
 
-    List<History> allBudgetHistoryItems = findOnlyBudgetHistoryItems(index);
-    int dummyIndex = 1;
+    List allBudgetHistoryItems = findOnlyBudgetHistoryItems(index);
+    int totalBudgetHistoryItems = allBudgetHistoryItems.length;
 
     return Scaffold(
-      appBar: AppBar(title: Text(constant.appName+"  (History)"),),
+      appBar: AppBar(title: const Text(constant.appName+"  (History)"),),
       body: ConstrainedBox(
         constraints: BoxConstraints(maxHeight: 700),
         child: ListView.builder(
-          itemCount: allBudgetHistoryItems.length,
+          itemCount: totalBudgetHistoryItems,
           itemBuilder: (context, dummyIndex) {
 
             if(allBudgetHistoryItems.isNotEmpty) {
-              for(History h in allBudgetHistoryItems) {
-                allBudgetHistoryItems.removeAt(0);
+                History h = allBudgetHistoryItems.elementAt(totalBudgetHistoryItems -1 -dummyIndex);
                 return Card(
                   child: ListTile(
                     title: Text(h.name),
                     subtitle: Text("    Rs."+ h.amount.toString() + "           " + h.date.toString().substring(0, 10)),
                   ),
                 );
-              }
             }
             else {
-              return Card(
-                child: Text("Nothing found"),
+              return const Card(
+                child: const Text("Nothing found"),
               );
             }
-            return Spacer();
           },
         ),
       ),
