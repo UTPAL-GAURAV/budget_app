@@ -9,7 +9,7 @@ import '../../Controller/budget_controller.dart';
 
 
 late String _amountBU, _nameBU;
-int _newUsed = 0;
+int _newUsed = 0, _amountValue = 0;
 final _BUFormKey = GlobalKey<FormState>();
 
 final _budgetBox = Hive.box('budget');
@@ -32,13 +32,38 @@ budgetUpdatePopup(BuildContext context, int index) {
                       Text("Total Budget: Rs." + budget.total.toString()),
                       Text("Used        : Rs." + budget.used.toString()),
                       TextFormField(
+                        maxLength: 18,
                         decoration:
                         const InputDecoration(hintText: " New Sports Shoe", labelText: "Name"),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Please enter some text";
+                          }
+                          if(checkForBrackets(value) == false) {
+                            return "Do not type brackets ()";
+                          }
+                          return null;
+                        },
                         onSaved: (value) => _nameBU = value!,
                       ),
                       TextFormField(
                         keyboardType: TextInputType.number,
                         decoration: const InputDecoration(hintText: " 0", labelText: "Amount"),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {    // Setting value = 0, if user didnot enter
+                            return "Enter a valid amount";
+                          }
+                          try {
+                            _amountValue = int.parse(value);
+                          } catch (e) {
+                            return "Enter a valid amount";
+                          }
+                          if (_amountValue >= 0 && _amountValue < 99999990) {
+                            // Nine Crore..
+                            return null;
+                          }
+                          return "Enter a valid amount";
+                        },
                         onSaved: (value) => _amountBU = value!,
                       ),
                     ],
@@ -65,11 +90,13 @@ budgetUpdatePopup(BuildContext context, int index) {
                 child: const Text("Save"),
                 onPressed: () {
                   _BUFormKey.currentState!.save();
-                  _newUsed = budget.used + int.parse(_amountBU);
-                  _nameBU = budget.name + "  (" + _nameBU + ")";
-                  final updateBUTransaction = Budget(budget.name, budget.total, _newUsed, budget.monthlyBudget, budget.investmentExpense);
-                  updateBudget(index, updateBUTransaction, int.parse(_amountBU), _nameBU);
-                  Navigator.of(context, rootNavigator: true).pop();
+                  if(_BUFormKey.currentState!.validate()) {
+                    _newUsed = budget.used + int.parse(_amountBU);
+                    _nameBU = budget.name + "  (" + _nameBU + ")";
+                    final updateBUTransaction = Budget(budget.name, budget.total, _newUsed, budget.monthlyBudget, budget.investmentExpense);
+                    updateBudget(index, updateBUTransaction, int.parse(_amountBU), _nameBU);
+                    Navigator.of(context, rootNavigator: true).pop();
+                  }
                 }),
           ],
         ),

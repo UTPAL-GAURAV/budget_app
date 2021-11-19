@@ -8,7 +8,7 @@ import '../../Controller/home_controller.dart';
 
 
 late String _amountLLE;
-int _newRemainingAmount = 0;
+int _newRemainingAmount = 0, _amountValue = 0;
 DateTime _dateLLE = DateTime.now();
 final _LLEFormKey = GlobalKey<FormState>();
 
@@ -38,6 +38,24 @@ loanLendEditPopup(BuildContext context, int index) {
                       TextFormField(
                         keyboardType: TextInputType.number,
                         decoration: const InputDecoration(hintText: " 0", labelText: "Returned amount"),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {    // Setting value = 0, if user didnot enter
+                            return "Enter a valid amount";
+                          }
+                          try {
+                            _amountValue = int.parse(value);
+                          } catch (e) {
+                            return "Enter a valid amount";
+                          }
+                          if(_amountValue > loanLend.amount) {
+                            return "Excess return amount";
+                          }
+                          if (_amountValue >= 0 && _amountValue < 99999990) {
+                            // Nine Crore..
+                            return null;
+                          }
+                          return "Enter a valid amount";
+                        },
                         onSaved: (value) => _amountLLE = value!,
                       ),
                       InputDatePickerFormField(
@@ -56,10 +74,12 @@ loanLendEditPopup(BuildContext context, int index) {
                 child: Text("Save"),
                 onPressed: () {
                   _LLEFormKey.currentState!.save();
-                  _newRemainingAmount = loanLend.amount - int.parse(_amountLLE);
-                  final updateLLTransaction = LoanLend(loanLend.lenderBorrower, _newRemainingAmount, loanLend.name, _dateLLE, false);
-                  returnLoanLend(index, updateLLTransaction, int.parse(_amountLLE));
-                  Navigator.of(context, rootNavigator: true).pop();
+                  if(_LLEFormKey.currentState!.validate()) {
+                    _newRemainingAmount = loanLend.amount - int.parse(_amountLLE);
+                    final updateLLTransaction = LoanLend(loanLend.lenderBorrower, _newRemainingAmount, loanLend.name, _dateLLE, false);
+                    returnLoanLend(index, updateLLTransaction, int.parse(_amountLLE));
+                    Navigator.of(context, rootNavigator: true).pop();
+                  }
                 }),
           ],
         ),

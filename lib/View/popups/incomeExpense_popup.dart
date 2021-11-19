@@ -4,12 +4,11 @@ import 'package:flutter/services.dart';
 import '../../Model/income_expense.dart';
 import '../../Controller/home_controller.dart';
 
-
-
 bool _isSwitchedIE = false, _incomeExpenseTextIE = false;
 late String _nameIE, _amountIE;
 DateTime _dateIE = DateTime.now();
 final _IEFormKey = GlobalKey<FormState>();
+int _amountValue = 0;
 
 incomeExpensePopup(BuildContext context) {
   showDialog(
@@ -40,26 +39,59 @@ incomeExpensePopup(BuildContext context) {
                               _incomeExpenseTextIE = !_incomeExpenseTextIE;
                             });
                           }),
-                      Visibility(visible: _incomeExpenseTextIE, child: const Text("Expense", style: TextStyle(color: Colors.red))),
-                      Visibility(visible: !_incomeExpenseTextIE, child: const Text("Income", style: TextStyle(color: Colors.green))),
+                      Visibility(
+                          visible: _incomeExpenseTextIE,
+                          child: const Text("Expense",
+                              style: TextStyle(color: Colors.red))),
+                      Visibility(
+                          visible: !_incomeExpenseTextIE,
+                          child: const Text("Income",
+                              style: TextStyle(color: Colors.green))),
                     ],
                   ),
                   TextFormField(
-                    decoration:
-                        const InputDecoration(hintText: " Salary, Netflix", labelText: "Name"),
+                    decoration: const InputDecoration(
+                        hintText: " Salary, Netflix", labelText: "Name"),
+                    maxLength: 20,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please enter some text";
+                      }
+                      return null;
+                    },
                     onSaved: (value) => _nameIE = value!,
                   ),
                   TextFormField(
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(hintText: " 0", labelText: "Amount"),
+                    decoration: const InputDecoration(
+                        hintText: " 0", labelText: "Amount"),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {    // Setting value = 0, if user didnot enter
+                        return "Enter a valid amount";
+                      }
+                      try {
+                        _amountValue = int.parse(value);
+                      } catch (e) {
+                        return "Enter a valid amount";
+                      }
+                      if (_amountValue >= 0 && _amountValue < 99999990) {
+                        // Nine Crore..
+                        return null;
+                      }
+                      return "Enter a valid amount";
+                    },
                     onSaved: (value) => _amountIE = value!,
                   ),
                   InputDatePickerFormField(
-                      fieldLabelText: "Due Date (mm/dd/yyyy)",
-                      initialDate: _dateIE,
-                      firstDate: DateTime(2020),
-                      lastDate: _dateIE,
-                      onDateSaved: (date){ setState(() { _dateIE = date;}); },
+                    fieldLabelText: "Due Date (mm/dd/yyyy)",
+                    initialDate: _dateIE,
+                    firstDate: DateTime(2020),
+                    lastDate: _dateIE,
+                    onDateSaved: (date) {
+                      setState(() {
+                        _dateIE = date;
+                      });
+                    },
                   ),
                 ],
               ),
@@ -70,9 +102,12 @@ incomeExpensePopup(BuildContext context) {
                 child: const Text("Save"),
                 onPressed: () {
                   _IEFormKey.currentState!.save();
-                  final newIETransaction = IncomeExpense(!_isSwitchedIE, _nameIE, int.parse(_amountIE), _dateIE);
-                  addNewIncomeExpense(newIETransaction);
-                  Navigator.of(context, rootNavigator: true).pop();
+                  if (_IEFormKey.currentState!.validate()) {
+                    final newIETransaction = IncomeExpense(
+                        !_isSwitchedIE, _nameIE, int.parse(_amountIE), _dateIE);
+                    addNewIncomeExpense(newIETransaction);
+                    Navigator.of(context, rootNavigator: true).pop();
+                  }
                 }),
           ],
         ),

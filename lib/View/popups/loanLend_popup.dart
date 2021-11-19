@@ -10,6 +10,7 @@ bool _isSwitchedLL = false, _lendBorrowTextLL = false;
 late String _nameLL, _amountLL;
 DateTime _dateLL = DateTime.now();
 final _LLFormKey = GlobalKey<FormState>();
+int _amountValue = 0;
 
 loanLendPopup(BuildContext context) {
   showDialog(
@@ -47,11 +48,33 @@ loanLendPopup(BuildContext context) {
                       TextFormField(
                         decoration:
                         const InputDecoration(hintText: " John", labelText: "Name"),
+                        maxLength: 15,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Please enter some text";
+                          }
+                          return null;
+                        },
                         onSaved: (value) => _nameLL = value!,
                       ),
                       TextFormField(
                         keyboardType: TextInputType.number,
                         decoration: const InputDecoration(hintText: " 0", labelText: "Amount"),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {    // Setting value = 0, if user didnot enter
+                            return "Enter a valid amount";
+                          }
+                          try {
+                            _amountValue = int.parse(value);
+                          } catch (e) {
+                            return "Enter a valid amount";
+                          }
+                          if (_amountValue >= 0 && _amountValue < 99999990) {
+                            // Nine Crore..
+                            return null;
+                          }
+                          return "Enter a valid amount";
+                        },
                         onSaved: (value) => _amountLL = value!,
                       ),
                       InputDatePickerFormField(
@@ -70,9 +93,11 @@ loanLendPopup(BuildContext context) {
                 child: const Text("Save"),
                 onPressed: () {
                   _LLFormKey.currentState!.save();
-                  final newLLTransaction = LoanLend(!_isSwitchedLL, int.parse(_amountLL), _nameLL, _dateLL, false);
-                  addNewLoanLend(newLLTransaction);
-                  Navigator.of(context, rootNavigator: true).pop();
+                  if(_LLFormKey.currentState!.validate()) {
+                    final newLLTransaction = LoanLend(!_isSwitchedLL, int.parse(_amountLL), _nameLL, _dateLL, false);
+                    addNewLoanLend(newLLTransaction);
+                    Navigator.of(context, rootNavigator: true).pop();
+                  }
                 }),
           ],
         ),

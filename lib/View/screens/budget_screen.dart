@@ -68,6 +68,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
               child: Align(
                   alignment: Alignment.bottomRight,
                   child: FloatingActionButton.extended(
+                      heroTag: "NewBudBtn",
                       label: const Text("New Budget"),
                       icon: const Icon(Icons.add),
                       onPressed: () {

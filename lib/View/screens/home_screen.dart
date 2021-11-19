@@ -33,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Align(
                   alignment: Alignment.bottomRight,
                   child: FloatingActionButton.extended(
+                    heroTag: "IncExpBtn",
                     onPressed: () {
                       openIncomeExpensePopup(context);
                     },
@@ -116,6 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Align(
                     alignment: Alignment.bottomRight,
                     child: FloatingActionButton.extended(
+                      heroTag: "LendBorrBtn",
                         label: const Text("Lend/Borrow"),
                         icon: const Icon(Icons.add),
                         onPressed: () {

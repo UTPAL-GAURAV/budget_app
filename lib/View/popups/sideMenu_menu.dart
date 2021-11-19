@@ -59,10 +59,16 @@ menuItems(BuildContext context) {
               child: Row(children: [
                 Expanded(
                   child: TextFormField(
-                    // initialValue: ,
+                    maxLength: 20,
                     decoration: InputDecoration(
                       labelText: "New Name",
                     ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "Please enter some text";
+                      }
+                      return null;
+                    },
                     onSaved: (value) => _newUserName = value!,
                   ),
                 ),
@@ -78,10 +84,12 @@ menuItems(BuildContext context) {
                   child: Text("Save"),
                   onPressed: () {
                     _EUNFormKey.currentState!.save();
-                    saveUserName(_newUserName);
-                    setState(() {
-                      _userNameVisible = !_userNameVisible;
-                    });
+                    if(_EUNFormKey.currentState!.validate()) {
+                      saveUserName(_newUserName);
+                      setState(() {
+                        _userNameVisible = !_userNameVisible;
+                      });
+                    }
                   },
                 )
               ]),

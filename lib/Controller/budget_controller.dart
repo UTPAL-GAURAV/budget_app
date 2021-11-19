@@ -138,6 +138,17 @@ String getStringInsideBrackets(List<String> stringWithBrackets) {
 }
 
 
+bool checkForBrackets(String value) {
+  int i=0;
+  for(i=0; i<value.length; i++) {
+    if(value[i] == "(" || value[i] == ")") {
+      return true;
+    }
+  }
+  return false;
+}
+
+
 int calculateRemaining(int total, int used) => (total-used);
 
 

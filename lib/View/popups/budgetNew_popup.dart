@@ -7,6 +7,7 @@ import '../../Controller/budget_controller.dart';
 bool _isSwitchedNB = false, _lendBorrowTextNB = false;
 late String _nameNB, _amountNB;
 final _NBFormKey = GlobalKey<FormState>();
+int _amountValue = 0;
 
 newBudgetPopup(BuildContext context) {
   showDialog(
@@ -23,13 +24,35 @@ newBudgetPopup(BuildContext context) {
                   child: Column(
                     children: [
                       TextFormField(
+                        maxLength: 12,
                         decoration:
                         const InputDecoration(hintText: " Clothes, Food", labelText: "Budget name"),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Please enter some text";
+                          }
+                          return null;
+                        },
                         onSaved: (value) => _nameNB = value!,
                       ),
                       TextFormField(
                         keyboardType: TextInputType.number,
                         decoration: const InputDecoration(hintText: " 0", labelText: "Monthly budget"),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {    // Setting value = 0, if user didnot enter
+                            return "Enter a valid amount";
+                          }
+                          try {
+                            _amountValue = int.parse(value);
+                          } catch (e) {
+                            return "Enter a valid amount";
+                          }
+                          if (_amountValue >= 0 && _amountValue < 99999990) {
+                            // Nine Crore..
+                            return null;
+                          }
+                          return "Enter a valid amount";
+                        },
                         onSaved: (value) => _amountNB = value!,
                       ),
                       Row(
