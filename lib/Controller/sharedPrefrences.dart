@@ -17,15 +17,4 @@ class MySharedPreferences {
     return instance.getString(key);
   }
 
-
-  // setUserIntData(String key, int value) async {
-  //   SharedPreferences instance = await SharedPreferences.getInstance();
-  //   instance.setInt(key, value);
-  // }
-  //
-  // getUserIntData(String key) async {
-  //   SharedPreferences instance = await SharedPreferences.getInstance();
-  //   return instance.getInt(key);
-  // }
-
 }

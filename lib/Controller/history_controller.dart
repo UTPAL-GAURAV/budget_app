@@ -1,8 +1,6 @@
-
-import 'package:budget_app/models/income_expense.dart';
-import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import '../models/history.dart';
+
+import '../Model/history.dart';
 import 'budget_controller.dart';
 
 updateInHistory(String type, int amount, DateTime date, String name, bool inOut) {
@@ -50,8 +48,9 @@ int getHistoryItemCount() {
   Hive.openBox('history');
   final historyBox = Hive.box('history');
 
-  for(i=0; i<historyBox.length; i++)
+  for(i=0; i<historyBox.length; i++) {
     _itemCount += 1;
+  }
 
   return _itemCount;
 }

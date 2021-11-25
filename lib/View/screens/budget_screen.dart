@@ -1,5 +1,6 @@
 import 'package:budget_app/Controller/budget_controller.dart';
-import 'package:budget_app/models/budget.dart';
+import 'package:budget_app/Controller/home_controller.dart';
+import 'package:budget_app/Model/budget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -24,9 +25,9 @@ class _BudgetScreenState extends State<BudgetScreen> {
               box: _budgetBox,
               builder: (context, budgetBox) {
                 return ConstrainedBox(
-                  constraints: BoxConstraints(maxHeight: 700),
+                  constraints: const BoxConstraints(maxHeight: 700),
                   child: ListView.builder(
-                    itemCount: getBudgetCount(), //loanlendBox.length,
+                    itemCount: getBudgetCount(),
                     itemBuilder: (context, index) {
                       final budget = _budgetBox.getAt(index) as Budget;
                       return Card(
@@ -35,7 +36,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                           subtitle: Column(children: [
                             ClipRRect(
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
+                                  const BorderRadius.all(Radius.circular(10)),
                               child: LinearProgressIndicator(
                                 minHeight: 7,
                                 value: calculateUsedPercent(budget.used, budget.total),
@@ -46,11 +47,11 @@ class _BudgetScreenState extends State<BudgetScreen> {
                             Align(
                                 alignment: Alignment.bottomLeft,
                                 child: Text(
-                                    "Remaining: Rs." + calculateRemaining(budget.total, budget.used).toString() +
-                                        "                  Total: Rs." + budget.total.toString())),
+                                    "Remaining: ${getCurrencySymbol() }" + calculateRemaining(budget.total, budget.used).toString() +
+                                        "                  Total: ${getCurrencySymbol()} " + budget.total.toString())),
                           ]),
                           trailing: IconButton(
-                            icon: Icon(Icons.arrow_forward_ios_rounded),
+                            icon: const Icon(Icons.arrow_forward_ios_rounded),
                             onPressed: () {
                               openBudgetUpdatePopup(context, index);
                             },
@@ -63,14 +64,18 @@ class _BudgetScreenState extends State<BudgetScreen> {
               },
             )),
         Expanded(
-            child: Align(
-                alignment: Alignment.bottomRight,
-                child: FloatingActionButton.extended(
-                    label: Text("New Budget"),
-                    icon: Icon(Icons.add),
-                    onPressed: () {
-                      openNewBudgetPopup(context);
-                    })))
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: FloatingActionButton.extended(
+                      heroTag: "NewBudBtn",
+                      label: const Text("New Budget"),
+                      icon: const Icon(Icons.add),
+                      onPressed: () {
+                        openNewBudgetPopup(context);
+                      })),
+            ))
       ],
     );
   }

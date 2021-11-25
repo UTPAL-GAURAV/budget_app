@@ -1,4 +1,3 @@
-
 import 'package:hive/hive.dart';
 part 'budget.g.dart';
 
@@ -14,6 +13,8 @@ class Budget {
   late final int monthlyBudget;
   @HiveField(4)
   late final bool investmentExpense;
+  @HiveField(5)
+  late final String renewBudgetTime;
 
-  Budget(this.name, this.total, this.used, this.monthlyBudget, this.investmentExpense);
+  Budget(this.name, this.total, this.used, this.monthlyBudget, this.investmentExpense, this.renewBudgetTime);
 }

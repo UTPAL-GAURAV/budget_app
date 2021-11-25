@@ -1,18 +1,21 @@
 import 'dart:io';
+import 'package:budget_app/Model/settings.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:hive/hive.dart';
-
 import 'package:flutter/material.dart';
-import 'Utils/constants.dart' as constants;
-import 'View/pages/home_page.dart';
 import 'Controller/testing_controller.dart';
-// import 'pages/home_page.dart';
+import 'Controller/timely_controller.dart';
+import 'Model/balance.dart';
+import 'Model/budget.dart';
+import 'Model/history.dart';
+import 'Model/income_expense.dart';
+import 'Model/loanlend.dart';
+import 'Model/settings.dart';
+import 'View/pages/home_page.dart';
+import 'Utils/constants.dart' as constants;
 
-import 'models/balance.dart';
-import 'models/budget.dart';
-import 'models/history.dart';
-import 'models/income_expense.dart';
-import 'models/loanlend.dart';
+
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +26,11 @@ void main() async{
   Hive.registerAdapter(HistoryAdapter());
   Hive.registerAdapter(IncomeExpenseAdapter());
   Hive.registerAdapter(LoanLendAdapter());
+  Hive.registerAdapter(SettingsAdapter());
+
+  await SystemChrome.setPreferredOrientations(
+    [DeviceOrientation.portraitUp],               // Disable Landscape mode
+  );
   runApp(const MyApp());
 }
 
@@ -47,11 +55,12 @@ class _MyAppState extends State<MyApp> {
               return Text(snapshot.error.toString());
             }
             else {
-              return HomePage();
+              updateDbTimely();
+              return const HomePage();
             }
           }
           else {
-            return Scaffold();
+            return const Scaffold();
           }
         },
       ),
@@ -71,16 +80,18 @@ Future<List<Box>> _openAllBoxes() async {
   final balanceBox = await Hive.openBox('balance');
   final budgetBox = await Hive.openBox('budget');
   final historyBox = await Hive.openBox('history');
-  final income_expenseBox = await Hive.openBox('income_expense');
+  final incomeExpenseBox = await Hive.openBox('income_expense');
   final loanlendBox = await Hive.openBox('loanlend');
+  final settingsBox = await Hive.openBox('settings');
 
   // deleteAllData();
 
   boxList.add(balanceBox);
   boxList.add(budgetBox);
   boxList.add(historyBox);
-  boxList.add(income_expenseBox);
+  boxList.add(incomeExpenseBox);
   boxList.add(loanlendBox);
+  boxList.add(settingsBox);
 
   return boxList;
 }
