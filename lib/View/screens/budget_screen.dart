@@ -1,4 +1,5 @@
 import 'package:budget_app/Controller/budget_controller.dart';
+import 'package:budget_app/Controller/home_controller.dart';
 import 'package:budget_app/Model/budget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -46,8 +47,8 @@ class _BudgetScreenState extends State<BudgetScreen> {
                             Align(
                                 alignment: Alignment.bottomLeft,
                                 child: Text(
-                                    "Remaining: Rs." + calculateRemaining(budget.total, budget.used).toString() +
-                                        "                  Total: Rs." + budget.total.toString())),
+                                    "Remaining: ${getCurrencySymbol() }" + calculateRemaining(budget.total, budget.used).toString() +
+                                        "                  Total: ${getCurrencySymbol()} " + budget.total.toString())),
                           ]),
                           trailing: IconButton(
                             icon: const Icon(Icons.arrow_forward_ios_rounded),

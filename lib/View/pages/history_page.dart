@@ -1,4 +1,6 @@
+import 'package:budget_app/Controller/home_controller.dart';
 import 'package:budget_app/Model/history.dart';
+import 'package:budget_app/Utils/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -34,12 +36,35 @@ class _HistoryPageState extends State<HistoryPage> {
                   _historyBox.getAt(_totalHistoryCount - 1 - index) as History;
               return Card(
                 child: ListTile(
+                  // shape: RoundedRectangleBorder(side: new BorderSide(color: history.inout? colorCloverGreen : colorChillyPepper, width: 1.0),
+                  //     borderRadius: BorderRadius.circular(4.0)),
+                  leading: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      SizedBox(
+                          height: 35,
+                          width: 35,
+                          child: Image.asset(
+                            history.inout
+                                ? 'assets/images/calandarGreen.png'
+                                : 'assets/images/calandarRed.png',
+                            fit: BoxFit.fill,
+                          )),
+                      Text(
+                        getLoanLendDateInString(history.date.toString()),
+                      ),
+                    ],
+                  ),
                   title: Text(history.name),
-                  subtitle: Text(history.type +
-                      "   " +
-                      history.date.toString().substring(0, 10) +
-                      "    Rs." +
-                      history.amount.toString()),
+                  subtitle: Text(history.type),
+                  trailing: Text(
+                    "${getCurrencySymbol()} " + history.amount.toString(),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color:
+                          history.inout ? colorCloverGreen : colorChillyPepper,
+                    ),
+                  ),
                 ),
               );
             },

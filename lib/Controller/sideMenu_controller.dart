@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:hive/hive.dart';
 
 import '../Model/currency.dart';
 import 'sharedPrefrences.dart';
@@ -7,6 +8,12 @@ import '../Utils/currencies.dart';
 
 saveUserCurrency(String country, BuildContext context) async {
   MySharedPreferences.instance.setUserStringData('userCurrencyCountry', country);
+
+  // Update Currency in Settings
+  Hive.openBox('settings');
+  final settingsBox = Hive.box('settings');
+  settingsBox.put("1", country);
+  print("ssssss " + country);
 }
 
 

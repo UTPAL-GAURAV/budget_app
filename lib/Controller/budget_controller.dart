@@ -128,11 +128,19 @@ List<History> findOnlyBudgetHistoryItems(int index) {
 
 
 String getStringInsideBrackets(List<String> stringWithBrackets) {
-  late String insideStringNoBrackets;
+  late String insideStringNoBrackets, _backBracketRemoved;
 
-  var _trimmedString = stringWithBrackets[1].trim();
-  var _backBracketRemoved = _trimmedString.split(")");
-  insideStringNoBrackets = _backBracketRemoved[0].trim();
+  var _trimmedString = stringWithBrackets[1].trim(); // Remove budgetName & first (
+  var _lastIndex = _trimmedString.lastIndexOf(")"); // Get last occurrence of )
+
+  if(_lastIndex != -1) {
+    _backBracketRemoved = _trimmedString.substring(0, _lastIndex); // Take substring till )
+    insideStringNoBrackets = _backBracketRemoved;
+  }
+  else {
+    _backBracketRemoved = _trimmedString..split(")");
+    insideStringNoBrackets = _backBracketRemoved[0].trim();
+  }
 
   return insideStringNoBrackets;
 }

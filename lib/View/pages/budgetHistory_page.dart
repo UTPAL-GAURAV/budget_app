@@ -1,3 +1,4 @@
+import 'package:budget_app/Controller/home_controller.dart';
 import 'package:budget_app/Model/history.dart';
 import 'package:flutter/material.dart';
 import '../../utils/constants.dart' as constant;
@@ -36,7 +37,7 @@ class _BudgetHistoryPageState extends State<BudgetHistoryPage> {
                 return Card(
                   child: ListTile(
                     title: Text(h.name),
-                    subtitle: Text("    Rs."+ h.amount.toString() + "           " + h.date.toString().substring(0, 10)),
+                    subtitle: Text("    ${getCurrencySymbol()}"+ h.amount.toString() + "           " + h.date.toString().substring(0, 10)),
                   ),
                 );
             }

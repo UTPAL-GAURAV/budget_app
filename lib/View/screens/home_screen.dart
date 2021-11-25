@@ -1,4 +1,5 @@
 import 'package:budget_app/Controller/sideMenu_controller.dart';
+import 'package:budget_app/Model/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
@@ -8,8 +9,6 @@ import '../../Model/loanlend.dart';
 import '../pages/history_page.dart';
 import '../../Controller/home_controller.dart';
 import '../../Utils/styles.dart';
-
-
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -23,6 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final _loanlendBox = Hive.box('loanlend');
     final _balanceBox = Hive.box('balance');
+    final _settingsBox = Hive.box('settings');
 
     return Column(
       children: [
@@ -47,27 +47,91 @@ class _HomeScreenState extends State<HomeScreen> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Padding(
+                      //   padding: const EdgeInsets.only(left:20.0, top:22.0),
+                      //   child: FutureBuilder<dynamic>(
+                      //   future: getUserCurrencySymbol(),
+                      //   builder:
+                      //   (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                      //   if (snapshot.hasError || snapshot.data == null) {
+                      //   return Text("Bank Balance: ${getBankBalance()}", style: TextStyle(fontSize: 20));
+                      //   } else {
+                      //   return Text("Bank Balance: " + snapshot.data.toString() + " ${getBankBalance()}", style: TextStyle(fontSize: 20));
+                      //   }
+                      //   })
+                      // ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(left:20.0, top:10.0),
+                      //   child: Text("Your Worth: ${getWorth()}", style: TextStyle(fontSize: 16, color: colorDarkGray),),
+                      // ),
                       Padding(
-                        padding: const EdgeInsets.only(left:20.0, top:22.0),
-                        child: FutureBuilder<dynamic>(
-                        future: getUserCurrencySymbol(),
-                        builder:
-                        (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                        if (snapshot.hasError || snapshot.data == null) {
-                        return Text("Bank Balance: ${getBankBalance()}", style: TextStyle(fontSize: 20));
-                        } else {
-                        return Text("Bank Balance: " + snapshot.data.toString() + " ${getBankBalance()}", style: TextStyle(fontSize: 20));
-                        }
-                        })
+                        padding: const EdgeInsets.only(
+                            left: 20.0, top: 10.0, right: 20.0),
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height * 0.18,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(colors: [
+                              Colors.lightBlueAccent,
+                              Colors.blueAccent
+                            ]),
+                            borderRadius: BorderRadius.circular(40),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.lightBlueAccent.withOpacity(0.5),
+                                blurRadius: 7,
+                                offset: Offset(4, 8), // shadow position
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              Image.asset('assets/images/piggy.png'),
+                              WatchBoxBuilder(
+                                  box: _settingsBox,
+                                  builder: (context, settingsBox) {
+                                    return Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.045,
+                                        ),
+                                        Text(
+                                          "Current balance",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                        Text(
+                                          "${getCurrencySymbol()} ${getBankBalance()}",
+                                          style: TextStyle(
+                                              fontSize: 30,
+                                              color: Colors.white),
+                                        ),
+                                        SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.03,
+                                        ),
+                                        Text(
+                                          "Your Worth: ${getWorth()}",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ],
+                                    );
+                                  }),
+                            ],
+                          ),
+                        ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left:20.0, top:10.0),
-                        child: Text("Your Worth: ${getWorth()}", style: TextStyle(fontSize: 16, color: colorDarkGray),),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left:20.0, top:22.0),
+                        padding: const EdgeInsets.only(left: 20.0, top: 22.0),
                         child: TextButton(
-                            child: const Text("All History", style: TextStyle(fontSize: 15)),
+                            child: const Text("All History",
+                                style: TextStyle(fontSize: 15)),
                             onPressed: () {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => const HistoryPage()));
@@ -83,41 +147,94 @@ class _HomeScreenState extends State<HomeScreen> {
           flex: 2,
           child: Column(
             children: [
-              Text("Lend/Borrow", style: GoogleFonts.quicksand(textStyle: fontSize15)),
+              Text("Lend/Borrow",
+                  style: GoogleFonts.quicksand(textStyle: fontSize15)),
               WatchBoxBuilder(
-                  box: _loanlendBox,
+                  box: _settingsBox,
                   builder: (context, loanlendBox) {
-                    return ConstrainedBox(
-                      constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height*0.43),
-                      child: ListView.builder(
-                        itemCount: getLoanLendItemCount(),
-                        itemBuilder: (context, index) {
-                          final loanLend = _loanlendBox.getAt(index) as LoanLend;
-                          if(loanLend.amount == 0) {                                     // Hiding 0 balance tiles
-                            return const Visibility(visible: false, child: Text(""));
-                          }
-                          return Card(
-                            child: ListTile(
-                              title: Text(getLoanLendText(loanLend.lenderBorrower) + loanLend.name),
-                              subtitle: Text("Rs." + loanLend.amount.toString() + "    Due Date: " + loanLend.date.toString().substring(0, 10) ),
-                              trailing: IconButton(
-                                icon: const Icon(Icons.edit),
-                                onPressed: () {
-                                  openLoanLendEditPopup(context, index);
-                                },
-                              ),
+                    return WatchBoxBuilder(
+                        box: _loanlendBox,
+                        builder: (context, loanlendBox) {
+                          return ConstrainedBox(
+                            constraints: BoxConstraints(
+                                maxHeight: MediaQuery.of(context).size.height * 0.43),
+                            child: ListView.builder(
+                              itemCount: getLoanLendItemCount(),
+                              itemBuilder: (context, index) {
+                                final loanLend =
+                                _loanlendBox.getAt(index) as LoanLend;
+                                // Hiding 0 balance tiles
+                                if (loanLend.amount == 0) {
+                                  return const Visibility(
+                                      visible: false, child: Text(""));
+                                }
+                                // if(loanLend.lenderBorrower == false) {
+                                //   colorMoney = Color(0xffff0000);
+                                // }
+                                return Container(
+                                  height: 70,
+                                  child: Card(
+                                    child: ListTile(
+                                      tileColor: colorVistaWhite,
+                                      leading: Column(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          SizedBox(
+                                              height: 35,
+                                              width: 35,
+                                              child: Image.asset(
+                                                loanLend.lenderBorrower? 'assets/images/calandarGreen.png' : 'assets/images/calandarRed.png',
+                                                fit: BoxFit.fill,
+                                              )),
+                                          Text(
+                                            getLoanLendDateInString(
+                                                loanLend.date.toString()),
+                                          ),
+                                        ],
+                                      ),
+                                      title: Row(
+                                        children: [
+                                          Expanded(
+                                            flex: 2,
+                                            child: Text(loanLend.name),
+                                          ),
+                                          Expanded(
+                                            flex: 1,
+                                            child: Text(
+                                              "${getCurrencySymbol()} " +
+                                                  loanLend.amount.toString(),
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                color: loanLend.lenderBorrower
+                                                    ? colorCloverGreen
+                                                    : colorChillyPepper,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      trailing: IconButton(
+                                        icon: const Icon(Icons.edit),
+                                        onPressed: () {
+                                          openLoanLendEditPopup(context, index);
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                           );
-                        },
-                      ),
-                    );
-                  }),
+                        });
+                  }
+
+              ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Align(
                     alignment: Alignment.bottomRight,
                     child: FloatingActionButton.extended(
-                      heroTag: "LendBorrBtn",
+                        heroTag: "LendBorrBtn",
                         label: const Text("Lend/Borrow"),
                         icon: const Icon(Icons.add),
                         onPressed: () {

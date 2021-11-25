@@ -1,13 +1,17 @@
 import 'dart:io';
+import 'package:budget_app/Model/settings.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart' as path_provider;
 import 'package:hive/hive.dart';
 import 'package:flutter/material.dart';
+import 'Controller/testing_controller.dart';
+import 'Controller/timely_controller.dart';
 import 'Model/balance.dart';
 import 'Model/budget.dart';
 import 'Model/history.dart';
 import 'Model/income_expense.dart';
 import 'Model/loanlend.dart';
+import 'Model/settings.dart';
 import 'View/pages/home_page.dart';
 import 'Utils/constants.dart' as constants;
 
@@ -22,6 +26,7 @@ void main() async{
   Hive.registerAdapter(HistoryAdapter());
   Hive.registerAdapter(IncomeExpenseAdapter());
   Hive.registerAdapter(LoanLendAdapter());
+  Hive.registerAdapter(SettingsAdapter());
 
   await SystemChrome.setPreferredOrientations(
     [DeviceOrientation.portraitUp],               // Disable Landscape mode
@@ -50,6 +55,7 @@ class _MyAppState extends State<MyApp> {
               return Text(snapshot.error.toString());
             }
             else {
+              updateDbTimely();
               return const HomePage();
             }
           }
@@ -76,6 +82,7 @@ Future<List<Box>> _openAllBoxes() async {
   final historyBox = await Hive.openBox('history');
   final incomeExpenseBox = await Hive.openBox('income_expense');
   final loanlendBox = await Hive.openBox('loanlend');
+  final settingsBox = await Hive.openBox('settings');
 
   // deleteAllData();
 
@@ -84,6 +91,7 @@ Future<List<Box>> _openAllBoxes() async {
   boxList.add(historyBox);
   boxList.add(incomeExpenseBox);
   boxList.add(loanlendBox);
+  boxList.add(settingsBox);
 
   return boxList;
 }

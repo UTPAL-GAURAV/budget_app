@@ -32,7 +32,7 @@ loanLendEditPopup(BuildContext context, int index) {
                       Row(
                         children: [
                           Text(getLoanLendText(loanLend.lenderBorrower) + loanLend.name),
-                          Text("Rs." + loanLend.amount.toString()),
+                          Text("${getCurrencySymbol()} " + loanLend.amount.toString()),
                         ],
                       ),
                       TextFormField(
@@ -40,7 +40,8 @@ loanLendEditPopup(BuildContext context, int index) {
                         decoration: const InputDecoration(hintText: " 0", labelText: "Returned amount"),
                         validator: (value) {
                           if (value == null || value.isEmpty) {    // Setting value = 0, if user didnot enter
-                            return "Enter a valid amount";
+                            _amountLLE = "0";
+                            return null;
                           }
                           try {
                             _amountValue = int.parse(value);
@@ -49,6 +50,9 @@ loanLendEditPopup(BuildContext context, int index) {
                           }
                           if(_amountValue > loanLend.amount) {
                             return "Excess return amount";
+                          }
+                          if(_amountValue > getBankBalance() && loanLend.lenderBorrower == false) {
+                            return "Not enough balance";
                           }
                           if (_amountValue >= 0 && _amountValue < 99999990) {
                             // Nine Crore..

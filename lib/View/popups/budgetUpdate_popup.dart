@@ -1,3 +1,4 @@
+import 'package:budget_app/Controller/home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
@@ -29,8 +30,8 @@ budgetUpdatePopup(BuildContext context, int index) {
                   constraints: BoxConstraints(maxHeight: 300),
                   child: Column(
                     children: [
-                      Text("Total Budget: Rs." + budget.total.toString()),
-                      Text("Used        : Rs." + budget.used.toString()),
+                      Text("Total Budget: ${getCurrencySymbol()} " + budget.total.toString()),
+                      Text("Used        : ${getCurrencySymbol()} " + budget.used.toString()),
                       TextFormField(
                         maxLength: 18,
                         decoration:
@@ -39,7 +40,7 @@ budgetUpdatePopup(BuildContext context, int index) {
                           if (value == null || value.isEmpty) {
                             return "Please enter some text";
                           }
-                          if(checkForBrackets(value) == false) {
+                          if(checkForBrackets(value)) {
                             return "Do not type brackets ()";
                           }
                           return null;
@@ -50,13 +51,16 @@ budgetUpdatePopup(BuildContext context, int index) {
                         keyboardType: TextInputType.number,
                         decoration: const InputDecoration(hintText: " 0", labelText: "Amount"),
                         validator: (value) {
-                          if (value == null || value.isEmpty) {    // Setting value = 0, if user didnot enter
+                          if (value == null || value.isEmpty) {
                             return "Enter a valid amount";
                           }
                           try {
                             _amountValue = int.parse(value);
                           } catch (e) {
                             return "Enter a valid amount";
+                          }
+                          if(_amountValue > getBankBalance()) {
+                            return "Not enough balance";
                           }
                           if (_amountValue >= 0 && _amountValue < 99999990) {
                             // Nine Crore..
@@ -93,7 +97,7 @@ budgetUpdatePopup(BuildContext context, int index) {
                   if(_BUFormKey.currentState!.validate()) {
                     _newUsed = budget.used + int.parse(_amountBU);
                     _nameBU = budget.name + "  (" + _nameBU + ")";
-                    final updateBUTransaction = Budget(budget.name, budget.total, _newUsed, budget.monthlyBudget, budget.investmentExpense);
+                    final updateBUTransaction = Budget(budget.name, budget.total, _newUsed, budget.monthlyBudget, budget.investmentExpense, budget.renewBudgetTime);
                     updateBudget(index, updateBUTransaction, int.parse(_amountBU), _nameBU);
                     Navigator.of(context, rootNavigator: true).pop();
                   }

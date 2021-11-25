@@ -7,7 +7,7 @@ import '../../Controller/budget_controller.dart';
 import '../../Controller/history_controller.dart';
 
 
-late String _nameBE, _monthlyBudgetBE, _totalBE;
+late String _nameBE, _monthlyBudgetBE, _totalBE, _renewBudgetBE;
 final _BEFormKey = GlobalKey<FormState>();
 int _amountValue = 0;
 
@@ -28,6 +28,14 @@ budgetEditPopup(BuildContext context, int index) {
                   constraints: BoxConstraints(maxHeight: 300),
                   child: Column(
                     children: [
+                      DropdownButtonFormField(value: budget.renewBudgetTime, items: <String>["Daily","Weekly","Monthly","Yearly"].map((e) {
+                        return DropdownMenuItem(
+                          value: e,
+                          child: Text(e) ,
+                        );
+                      }).toList(),
+                        onChanged: (value) => _renewBudgetBE = value.toString(),
+                      ),
                       Align(alignment: Alignment.centerLeft, child: const Text("Budget Name")),
                       TextFormField(
                         maxLength: 12,
@@ -98,7 +106,7 @@ budgetEditPopup(BuildContext context, int index) {
                 child: const Text("Save"),
                 onPressed: () {
                   _BEFormKey.currentState!.save();
-                  final updateBUTransaction = Budget(_nameBE, int.parse(_totalBE), budget.used, int.parse(_monthlyBudgetBE), budget.investmentExpense);
+                  final updateBUTransaction = Budget(_nameBE, int.parse(_totalBE), budget.used, int.parse(_monthlyBudgetBE), budget.investmentExpense, _renewBudgetBE);
                   updateBudget(index, updateBUTransaction, 0, "");
                   changeNameInHistory(budget.name, _nameBE);
                   Navigator.of(context, rootNavigator: true).pop();

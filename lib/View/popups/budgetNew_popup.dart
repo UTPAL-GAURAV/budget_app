@@ -5,7 +5,7 @@ import '../../Model/budget.dart';
 import '../../Controller/budget_controller.dart';
 
 bool _isSwitchedNB = false, _lendBorrowTextNB = false;
-late String _nameNB, _amountNB;
+late String _nameNB, _amountNB, _renewBudgetNB = "Monthly";
 final _NBFormKey = GlobalKey<FormState>();
 int _amountValue = 0;
 
@@ -35,11 +35,19 @@ newBudgetPopup(BuildContext context) {
                         },
                         onSaved: (value) => _nameNB = value!,
                       ),
+                      DropdownButtonFormField(value: "Monthly", items: <String>["Daily","Weekly","Monthly","Yearly"].map((e) {
+                        return DropdownMenuItem(
+                          value: e,
+                          child: Text(e) ,
+                        );
+                      }).toList(),
+                        onChanged: (value) => _renewBudgetNB = value.toString(),
+                      ),
                       TextFormField(
                         keyboardType: TextInputType.number,
                         decoration: const InputDecoration(hintText: " 0", labelText: "Monthly budget"),
                         validator: (value) {
-                          if (value == null || value.isEmpty) {    // Setting value = 0, if user didnot enter
+                          if (value == null || value.isEmpty) {
                             return "Enter a valid amount";
                           }
                           try {
@@ -47,7 +55,7 @@ newBudgetPopup(BuildContext context) {
                           } catch (e) {
                             return "Enter a valid amount";
                           }
-                          if (_amountValue >= 0 && _amountValue < 99999990) {
+                          if (_amountValue > 0 && _amountValue < 99999990) {
                             // Nine Crore..
                             return null;
                           }
@@ -83,9 +91,11 @@ newBudgetPopup(BuildContext context) {
                 child: const Text("Save"),
                 onPressed: () {
                   _NBFormKey.currentState!.save();
-                  final _newNBTransaction = Budget(_nameNB, int.parse(_amountNB), 0, int.parse(_amountNB), !_isSwitchedNB);
-                  addNewBudget(_newNBTransaction);
-                  Navigator.of(context, rootNavigator: true).pop();
+                  if (_NBFormKey.currentState!.validate()) {
+                    final _newNBTransaction = Budget(_nameNB, int.parse(_amountNB), 0, int.parse(_amountNB), !_isSwitchedNB, _renewBudgetNB);
+                    addNewBudget(_newNBTransaction);
+                    Navigator.of(context, rootNavigator: true).pop();
+                  }
                 }),
           ],
         ),

@@ -66,7 +66,7 @@ incomeExpensePopup(BuildContext context) {
                     decoration: const InputDecoration(
                         hintText: " 0", labelText: "Amount"),
                     validator: (value) {
-                      if (value == null || value.isEmpty) {    // Setting value = 0, if user didnot enter
+                      if (value == null || value.isEmpty) {
                         return "Enter a valid amount";
                       }
                       try {
@@ -74,7 +74,10 @@ incomeExpensePopup(BuildContext context) {
                       } catch (e) {
                         return "Enter a valid amount";
                       }
-                      if (_amountValue >= 0 && _amountValue < 99999990) {
+                      if(_amountValue > getBankBalance() && _isSwitchedIE == true) {
+                        return "Not enough balance";
+                      }
+                      if (_amountValue > 0 && _amountValue < 99999990) {
                         // Nine Crore..
                         return null;
                       }
@@ -83,7 +86,7 @@ incomeExpensePopup(BuildContext context) {
                     onSaved: (value) => _amountIE = value!,
                   ),
                   InputDatePickerFormField(
-                    fieldLabelText: "Due Date (mm/dd/yyyy)",
+                    fieldLabelText: "Date (mm/dd/yyyy)",
                     initialDate: _dateIE,
                     firstDate: DateTime(2020),
                     lastDate: _dateIE,

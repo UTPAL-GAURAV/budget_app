@@ -22,6 +22,7 @@ class _HomePageState extends State<HomePage> {
       initialIndex: 0,
       child: SafeArea(
         child: Scaffold(
+          backgroundColor: Color(0xffF5F5F5),
           drawer: Drawer(child: menuItems(context)),
           appBar: AppBar(
             title: const Text(constant.appName),

@@ -69,7 +69,10 @@ loanLendPopup(BuildContext context) {
                           } catch (e) {
                             return "Enter a valid amount";
                           }
-                          if (_amountValue >= 0 && _amountValue < 99999990) {
+                          if(_amountValue > getBankBalance() && _isSwitchedLL == false) {
+                            return "Not enough balance";
+                          }
+                          if (_amountValue > 0 && _amountValue < 99999990) {
                             // Nine Crore..
                             return null;
                           }
