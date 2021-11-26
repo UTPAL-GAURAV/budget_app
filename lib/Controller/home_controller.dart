@@ -39,11 +39,8 @@ addNewLoanLend(LoanLend newLLTransaction) {
   Hive.openBox('loanlend');
   final incomeExpenseBox = Hive.box('loanlend');
   incomeExpenseBox.add(newLLTransaction);
-  updateInHistory("Loan/Lend", newLLTransaction.amount, DateTime.now(), newLLTransaction.name, newLLTransaction.lenderBorrower);
+  updateInHistory("Loan/Lend", newLLTransaction.amount, DateTime.now(), newLLTransaction.name, !newLLTransaction.lenderBorrower);
   updateBankBalance(!newLLTransaction.lenderBorrower, newLLTransaction.amount);
-  // if(newLLTransaction.lenderBorrower == false) {
-  //   updateWorth(false, newLLTransaction.amount);
-  // }
 }
 
 
@@ -59,10 +56,6 @@ returnLoanLend(int index, LoanLend updateLLTransaction, int _amountLLE) {
     updateInHistory("Loan/Lend", _amountLLE, updateLLTransaction.date, newName, updateLLTransaction.lenderBorrower);
     updateBankBalance(updateLLTransaction.lenderBorrower, _amountLLE);
   }
-
-  // if(updateLLTransaction.lenderBorrower == false) {
-  //   updateWorth(false, _amountLLE);
-  // }
 }
 
 

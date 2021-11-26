@@ -17,6 +17,8 @@ incomeExpensePopup(BuildContext context) {
       return Form(
         key: _IEFormKey,
         child: AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(22.0))),
           title: const Text("Income/Expense"),
           content: StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {

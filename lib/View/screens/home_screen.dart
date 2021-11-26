@@ -47,23 +47,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Padding(
-                      //   padding: const EdgeInsets.only(left:20.0, top:22.0),
-                      //   child: FutureBuilder<dynamic>(
-                      //   future: getUserCurrencySymbol(),
-                      //   builder:
-                      //   (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                      //   if (snapshot.hasError || snapshot.data == null) {
-                      //   return Text("Bank Balance: ${getBankBalance()}", style: TextStyle(fontSize: 20));
-                      //   } else {
-                      //   return Text("Bank Balance: " + snapshot.data.toString() + " ${getBankBalance()}", style: TextStyle(fontSize: 20));
-                      //   }
-                      //   })
-                      // ),
-                      // Padding(
-                      //   padding: const EdgeInsets.only(left:20.0, top:10.0),
-                      //   child: Text("Your Worth: ${getWorth()}", style: TextStyle(fontSize: 16, color: colorDarkGray),),
-                      // ),
                       Padding(
                         padding: const EdgeInsets.only(
                             left: 20.0, top: 10.0, right: 20.0),
@@ -157,7 +140,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         builder: (context, loanlendBox) {
                           return ConstrainedBox(
                             constraints: BoxConstraints(
-                                maxHeight: MediaQuery.of(context).size.height * 0.43),
+                                maxHeight: MediaQuery.of(context).size.height * 0.44),
                             child: ListView.builder(
                               itemCount: getLoanLendItemCount(),
                               itemBuilder: (context, index) {
@@ -168,9 +151,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                   return const Visibility(
                                       visible: false, child: Text(""));
                                 }
-                                // if(loanLend.lenderBorrower == false) {
-                                //   colorMoney = Color(0xffff0000);
-                                // }
                                 return Container(
                                   height: 70,
                                   child: Card(

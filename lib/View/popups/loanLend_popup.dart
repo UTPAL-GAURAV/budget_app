@@ -19,6 +19,8 @@ loanLendPopup(BuildContext context) {
       return Form(
         key: _LLFormKey,
         child: AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(22.0))),
           title: const Text("Loan/Lend"),
           content: StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
@@ -82,8 +84,8 @@ loanLendPopup(BuildContext context) {
                       ),
                       InputDatePickerFormField(
                         fieldLabelText: "Due Date (mm/dd/yyyy)",
-                        initialDate: _dateLL,
-                        firstDate: _dateLL,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime.now(),
                         lastDate: DateTime(2080),
                         onDateSaved: (date){ setState(() { _dateLL = date;}); },
                       ),

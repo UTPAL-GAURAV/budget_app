@@ -11,6 +11,8 @@ budgetDeletePopup(BuildContext context, int index) {
       return Form(
         key: _BDFormKey,
         child: AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(22.0))),
           title: const Text("Delete Budget"),
           content: StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {

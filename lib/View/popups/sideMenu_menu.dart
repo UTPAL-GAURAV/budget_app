@@ -1,3 +1,4 @@
+import 'package:budget_app/View/pages/help_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -150,7 +151,10 @@ menuItems(BuildContext context) {
               margin: spaceTop20,
               padding: spaceLeft10,
               child: Text("Other Information")),
-          ListTile(title: Text("Help")),
+          ListTile(title: Text("Help"), onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const HelpPage()));
+          },),
           ListTile(title: Text("Contact Us")),
           Divider(),
           Center(child: Text(constant.version)),

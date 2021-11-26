@@ -16,6 +16,8 @@ newBudgetPopup(BuildContext context) {
       return Form(
         key: _NBFormKey,
         child: AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(22.0))),
           title: const Text("Add New Budget"),
           content: StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {

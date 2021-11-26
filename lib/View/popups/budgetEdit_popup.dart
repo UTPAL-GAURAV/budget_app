@@ -21,6 +21,8 @@ budgetEditPopup(BuildContext context, int index) {
       return Form(
         key: _BEFormKey,
         child: AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(22.0))),
           title: const Text("Edit"),
           content: StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {

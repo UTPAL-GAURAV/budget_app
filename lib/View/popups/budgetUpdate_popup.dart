@@ -23,6 +23,8 @@ budgetUpdatePopup(BuildContext context, int index) {
       return Form(
         key: _BUFormKey,
         child: AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(22.0))),
           title: const Text("New Budget Expense"),
           content: StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
